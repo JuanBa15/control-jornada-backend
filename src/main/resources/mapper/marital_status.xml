@@ -45,7 +45,7 @@
         <!-- @formatter:on -->
     </update>
 
-    <delete id="deleteById">
+    <delete id="delete">
         DELETE FROM marital_status WHERE id = #{id}
     </delete>
 

@@ -44,7 +44,7 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteById" parameterType="java.lang.Long">
+    <delete id="delete" parameterType="java.lang.Long">
         DELETE FROM region WHERE id = #{id}
     </delete>
 
