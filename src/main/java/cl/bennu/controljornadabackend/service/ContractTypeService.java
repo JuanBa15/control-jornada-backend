@@ -24,6 +24,7 @@ public class ContractTypeService {
                 : contractTypeMapper.get(contractType.getId());
 
         if (null == existingContractType) {
+            contractType.setId(contractTypeMapper.nextId());
             contractTypeMapper.insert(contractType);
         } else {
             contractTypeMapper.update(contractType);
