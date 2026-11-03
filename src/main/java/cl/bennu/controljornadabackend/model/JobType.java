@@ -15,5 +15,7 @@ public class JobType extends BaseDomain implements Serializable {
     private String name;
     private Long companyId;
     private Long branchId;
+    private String companyName;
+    private String branchName;
 
 }

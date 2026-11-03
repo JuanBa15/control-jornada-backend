@@ -9,6 +9,8 @@
         <result property="name" column="name"/>
         <result property="companyId" column="company_id"/>
         <result property="branchId" column="branch_id"/>
+        <result property="companyName" column="company_name"/>
+        <result property="branchName" column="branch_name"/>
     </resultMap>
 
     <sql id="sqlJobType">
@@ -17,7 +19,11 @@
             , jt.name
             , jt.company_id
             , jt.branch_id
+            , c.name AS company_name
+            , b.name AS branch_name
         FROM job_type jt
+        LEFT JOIN company c ON c.id = jt.company_id
+        LEFT JOIN branch b ON b.id = jt.branch_id
     </sql>
 
     <select id="getAll" resultMap="jobTypeMap">

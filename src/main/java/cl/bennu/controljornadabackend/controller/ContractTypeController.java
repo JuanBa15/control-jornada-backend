@@ -26,8 +26,15 @@ public class ContractTypeController extends BaseController {
     }
 
     @PostMapping(ENDPOINT)
-    public ResponseEntity<?> save(@RequestBody ContractType contractType) {
-        contractTypeService.saveContractType(contractType);
+    public ResponseEntity<?> create(@RequestBody ContractType contractType) {
+        contractTypeService.insertContractType(contractType);
+        return ok(contractType);
+    }
+
+    @PutMapping(ENDPOINT + "/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ContractType contractType) {
+        contractType.setId(id);
+        contractTypeService.updateContractType(contractType);
         return ok(contractType);
     }
 

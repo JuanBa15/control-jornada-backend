@@ -18,16 +18,14 @@ public class ContractTypeService {
     }
 
     @Transactional
-    public void saveContractType(ContractType contractType) {
-        ContractType existingContractType = null == contractType.getId()
-                ? null
-                : contractTypeMapper.get(contractType.getId());
+    public void insertContractType(ContractType contractType) {
+        contractType.setId(contractTypeMapper.nextId());
+        contractTypeMapper.insert(contractType);
+    }
 
-        if (null == existingContractType) {
-            contractTypeMapper.insert(contractType);
-        } else {
-            contractTypeMapper.update(contractType);
-        }
+    @Transactional
+    public void updateContractType(ContractType contractType) {
+        contractTypeMapper.update(contractType);
     }
 
     public ContractType getContractTypeById(Long contractTypeId) {
