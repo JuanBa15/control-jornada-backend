@@ -14,6 +14,8 @@ public class Branch extends BaseDomain implements Serializable {
 
     private Long companyId;
     private Long communeId;
+    private String companyName;
+    private String communeName;
     private String name;
     private String address;
     private String phone;

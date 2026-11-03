@@ -32,14 +32,31 @@ class JobTypeControllerTest {
     @BeforeEach void setUp() { mockMvc = MockMvcBuilders.standaloneSetup(controller).build(); }
 
     @Test void getAll_responde200() throws Exception {
-        when(service.getAllJobTypes()).thenReturn(List.of(new JobType()));
-        mockMvc.perform(get(URL)).andExpect(status().isOk()).andExpect(jsonPath("$[0]").exists());
+        JobType value = jobType();
+        when(service.getAllJobTypes()).thenReturn(List.of(value));
+        mockMvc.perform(get(URL)).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].companyName").value("Bennu SA"))
+                .andExpect(jsonPath("$[0].branchName").value("Sucursal Centro"));
     }
 
     @Test void getById_responde200() throws Exception {
-        JobType value = new JobType(); value.setId(1L);
+        JobType value = jobType();
         when(service.getJobTypeById(1L)).thenReturn(value);
-        mockMvc.perform(get(URL + "/1")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1));
+        mockMvc.perform(get(URL + "/1")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.companyName").value("Bennu SA"))
+                .andExpect(jsonPath("$.branchName").value("Sucursal Centro"));
+    }
+
+    private JobType jobType() {
+        JobType value = new JobType();
+        value.setId(1L);
+        value.setName("Analista");
+        value.setCompanyId(1L);
+        value.setBranchId(1L);
+        value.setCompanyName("Bennu SA");
+        value.setBranchName("Sucursal Centro");
+        return value;
     }
 
     @Test void create_llamaAlInsert() throws Exception {

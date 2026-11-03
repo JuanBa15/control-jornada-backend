@@ -28,6 +28,8 @@ class BranchServiceTest {
         branch.setId(1L);
         branch.setCompanyId(1L);
         branch.setCommuneId(1L);
+        branch.setCompanyName("Bennu SA");
+        branch.setCommuneName("Santiago");
         branch.setName("Sucursal Centro");
         branch.setAddress("Av. Siempre Viva 123");
         branch.setPhone("+56912345678");
@@ -44,6 +46,8 @@ class BranchServiceTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.getFirst().getName()).isEqualTo("Sucursal Centro");
+        assertThat(result.getFirst().getCompanyName()).isEqualTo("Bennu SA");
+        assertThat(result.getFirst().getCommuneName()).isEqualTo("Santiago");
     }
 
     @Test

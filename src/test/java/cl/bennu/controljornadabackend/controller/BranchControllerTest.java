@@ -57,6 +57,8 @@ class BranchControllerTest {
         branch.setId(1L);
         branch.setCompanyId(1L);
         branch.setCommuneId(1L);
+        branch.setCompanyName("Bennu SA");
+        branch.setCommuneName("Santiago");
         branch.setName("Sucursal Centro");
         branch.setAddress("Av. Siempre Viva 123");
         branch.setPhone("+56912345678");
@@ -72,7 +74,9 @@ class BranchControllerTest {
         mockMvc.perform(get(URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value("Sucursal Centro"));
+                .andExpect(jsonPath("$[0].name").value("Sucursal Centro"))
+                .andExpect(jsonPath("$[0].companyName").value("Bennu SA"))
+                .andExpect(jsonPath("$[0].communeName").value("Santiago"));
     }
 
     @Test
@@ -82,7 +86,9 @@ class BranchControllerTest {
         mockMvc.perform(get(URL + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Sucursal Centro"));
+                .andExpect(jsonPath("$.name").value("Sucursal Centro"))
+                .andExpect(jsonPath("$.companyName").value("Bennu SA"))
+                .andExpect(jsonPath("$.communeName").value("Santiago"));
     }
 
     @Test

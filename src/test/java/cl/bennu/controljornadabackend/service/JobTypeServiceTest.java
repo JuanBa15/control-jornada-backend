@@ -18,14 +18,26 @@ class JobTypeServiceTest {
     @InjectMocks private JobTypeService service;
 
     @Test void getAll_devuelveLoDelMapper() {
-        when(mapper.getAll()).thenReturn(List.of(new JobType()));
+        JobType value = jobType();
+        when(mapper.getAll()).thenReturn(List.of(value));
         assertThat(service.getAllJobTypes()).hasSize(1);
+        assertThat(service.getAllJobTypes().getFirst().getCompanyName()).isEqualTo("Bennu SA");
+        assertThat(service.getAllJobTypes().getFirst().getBranchName()).isEqualTo("Sucursal Centro");
     }
 
     @Test void getById_devuelveLoDelMapper() {
-        JobType value = new JobType();
+        JobType value = jobType();
         when(mapper.get(1L)).thenReturn(value);
         assertThat(service.getJobTypeById(1L)).isSameAs(value);
+    }
+
+    private JobType jobType() {
+        JobType value = new JobType();
+        value.setId(1L);
+        value.setName("Analista");
+        value.setCompanyName("Bennu SA");
+        value.setBranchName("Sucursal Centro");
+        return value;
     }
 
     @Test void insert_llamaAlInsertDelMapper() {

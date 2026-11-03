@@ -8,6 +8,8 @@
         <id property="id" column="id"/>
         <result property="companyId" column="company_id"/>
         <result property="communeId" column="commune_id"/>
+        <result property="companyName" column="company_name"/>
+        <result property="communeName" column="commune_name"/>
         <result property="name" column="name"/>
         <result property="address" column="address"/>
         <result property="phone" column="phone"/>
@@ -20,12 +22,16 @@
             b.id
             , b.company_id
             , b.commune_id
+            , c.name AS company_name
+            , cm.name AS commune_name
             , b.name
             , b.address
             , b.phone
             , b.alias
             , b.active
         FROM branch b
+        LEFT JOIN company c ON c.id = b.company_id
+        LEFT JOIN commune cm ON cm.id = b.commune_id
     </sql>
 
     <select id="getAll" resultMap="branchMap">
