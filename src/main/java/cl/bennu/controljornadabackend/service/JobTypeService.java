@@ -18,12 +18,13 @@ public class JobTypeService {
     }
 
     @Transactional
-    public void saveJobType(JobType jobType) {
-        if (null == jobType.getId()) {
-            jobTypeMapper.insert(jobType);
-        } else {
-            jobTypeMapper.update(jobType);
-        }
+    public void insertJobType(JobType jobType) {
+        jobTypeMapper.insert(jobType);
+    }
+
+    @Transactional
+    public void updateJobType(JobType jobType) {
+        jobTypeMapper.update(jobType);
     }
 
     public JobType getJobTypeById(Long jobTypeId) {

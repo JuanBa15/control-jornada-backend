@@ -18,16 +18,13 @@ public class BranchService {
     }
 
     @Transactional
-    public void save(Branch branch) {
-        Branch existingBranch = branch.getId() == null
-                ? null
-                : branchMapper.get(branch.getId());
+    public void insert(Branch branch) {
+        branchMapper.insert(branch);
+    }
 
-        if (existingBranch == null) {
-            branchMapper.insert(branch);
-        } else {
-            branchMapper.update(branch);
-        }
+    @Transactional
+    public void update(Branch branch) {
+        branchMapper.update(branch);
     }
 
     public Branch getById(Long branchId) {

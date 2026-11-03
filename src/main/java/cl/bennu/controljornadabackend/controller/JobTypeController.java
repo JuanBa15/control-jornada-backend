@@ -26,8 +26,15 @@ public class JobTypeController extends BaseController {
     }
 
     @PostMapping(ENDPOINT)
-    public ResponseEntity<?> save(@RequestBody JobType jobType) {
-        jobTypeService.saveJobType(jobType);
+    public ResponseEntity<?> create(@RequestBody JobType jobType) {
+        jobTypeService.insertJobType(jobType);
+        return ok(jobType);
+    }
+
+    @PutMapping(ENDPOINT + "/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody JobType jobType) {
+        jobType.setId(id);
+        jobTypeService.updateJobType(jobType);
         return ok(jobType);
     }
 
