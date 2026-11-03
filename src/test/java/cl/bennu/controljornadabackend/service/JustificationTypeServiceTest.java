@@ -59,22 +59,22 @@ public class JustificationTypeServiceTest {
     }
 
     @Test
-    void saveJustificationType_llamaAlInsertDelMapper() {
+    void create_llamaAlInsertDelMapper() {
         JustificationType j = justificationType();
         j.setId(null);
 
-        justificationTypeService.save(j);
+        justificationTypeService.create(j);
 
         verify(justificationTypeMapper).insert(j);
         verify(justificationTypeMapper, never()).update(any());
     }
 
     @Test
-    void saveJustificationType_llamaAlUpdateDelMapper() {
+    void update_llamaAlUpdateDelMapper() {
         JustificationType j = justificationType();
         // => ID no nulo
 
-        justificationTypeService.save(j);
+        justificationTypeService.update(j);
 
         verify(justificationTypeMapper).update(j);
         verify(justificationTypeMapper, never()).insert(any());

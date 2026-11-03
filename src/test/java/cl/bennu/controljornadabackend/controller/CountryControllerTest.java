@@ -130,7 +130,7 @@ public class CountryControllerTest {
                 .andExpect(jsonPath("$.nationality").value("Chilena"));
 
         ArgumentCaptor<Country> captor = ArgumentCaptor.forClass(Country.class);
-        verify(countryService).save(captor.capture());
+        verify(countryService).insert(captor.capture());
         assertThat(captor.getValue().getId()).isNull();
         assertThat(captor.getValue().getName()).isEqualTo("Chile");
         assertThat(captor.getValue().getNationality()).isEqualTo("Chilena");
@@ -153,7 +153,7 @@ public class CountryControllerTest {
                 .andExpect(jsonPath("$.id").value(1));
 
         ArgumentCaptor<Country> captor = ArgumentCaptor.forClass(Country.class);
-        verify(countryService).save(captor.capture());
+        verify(countryService).update(captor.capture());
         assertThat(captor.getValue().getId()).isEqualTo(1L);
     }
 
@@ -163,7 +163,7 @@ public class CountryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        verify(countryService, never()).save(any());
+        verify(countryService, never()).insert(any());
     }
 
     // ---------- DELETE /v1/template/country/{id} ----------

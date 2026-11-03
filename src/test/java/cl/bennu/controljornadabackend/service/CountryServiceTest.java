@@ -63,7 +63,7 @@ public class CountryServiceTest {
     void insert_invokeMapper(){
         Country countryTest = country();
         countryTest.setId(null);
-        countryService.save(countryTest);
+        countryService.insert(countryTest);
 
         verify(countryMapper).insert(countryTest);
         verify(countryMapper,never()).update(any());
@@ -72,7 +72,7 @@ public class CountryServiceTest {
     @Test
     void update_invokeMapper(){
         Country countryTest = country();
-        countryService.save(countryTest);
+        countryService.update(countryTest);
 
         verify(countryMapper).update(countryTest);
         verify(countryMapper,never()).insert(any());

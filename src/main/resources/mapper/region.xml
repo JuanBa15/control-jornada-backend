@@ -33,6 +33,10 @@
     </select>
 
     <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.Region">
+    <selectKey keyProperty="id" resultType="java.lang.Long" order="BEFORE">
+        SELECT COALESCE(#{id,jdbcType=BIGINT}, MAX(id) + 1, 1)
+        FROM region
+    </selectKey>
         INSERT INTO region (id, country_id, name)
         VALUES (#{id}, #{countryId}, #{name})
     </insert>
@@ -44,7 +48,7 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteById" parameterType="java.lang.Long">
+    <delete id="delete" parameterType="java.lang.Long">
         DELETE FROM region WHERE id = #{id}
     </delete>
 

@@ -59,14 +59,25 @@ class RegionServiceTest {
     }
 
     @Test
-    void saveRegion_sinId_llamaAlInsertDelMapper() {
+    void createRegion_sinId_llamaAlInsertDelMapper() {
         Region region = region();
         region.setId(null);
 
-        regionService.saveRegion(region);
+        regionService.createRegion(region);
 
         verify(regionMapper).insert(region);
         verify(regionMapper, never()).update(any());
+    }
+
+    @Test
+    void updateRegion_existente_llamaAlUpdateDelMapper() {
+        Region region = region();
+        when(regionMapper.get(1L)).thenReturn(region);
+
+        regionService.updateRegion(1L, region);
+
+        verify(regionMapper).update(region);
+        verify(regionMapper, never()).insert(any());
     }
 
     @Test
