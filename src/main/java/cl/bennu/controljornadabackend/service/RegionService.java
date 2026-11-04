@@ -20,17 +20,33 @@ public class RegionService {
     }
 
     @Transactional
-    public void saveRegion(Region region) {
+    public void createRegion(Region region) {
+        if (region.getId() != null && regionMapper.get(region.getId()) != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Ya existe una región con ese id");
+        }
+
+        if (regionMapper.buscarPorNombre(region.getName()) != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Ya existe una región con ese nombre");
+        }
+
+        regionMapper.insert(region);
+    }
+
+    @Transactional
+    public void updateRegion(Long id, Region region) {
+        if (regionMapper.get(id) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe una región con ese id");
+        }
+
+        region.setId(id);
         Region regionConEseNombre = regionMapper.buscarPorNombre(region.getName());
-        if (regionConEseNombre != null && !regionConEseNombre.getId().equals(region.getId())) {
+        if (regionConEseNombre != null && !regionConEseNombre.getId().equals(id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe una región con ese nombre");
         }
 
-        if (region.getId() == null) {
-            regionMapper.insert(region);
-        } else {
-            regionMapper.update(region);
-        }
+        regionMapper.update(region);
     }
 
     public Region getRegionById(Long id) {

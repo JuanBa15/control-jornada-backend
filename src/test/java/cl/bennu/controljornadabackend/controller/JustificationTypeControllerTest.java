@@ -116,7 +116,7 @@ public class JustificationTypeControllerTest {
     // ---------- POST /v1/template/justification-type ----------
 
     @Test
-    void save_insert_conId_return200() throws Exception {
+    void create_sinId_return200() throws Exception {
         String json = """
                 {
                   "name": "Descanso médico"
@@ -124,19 +124,30 @@ public class JustificationTypeControllerTest {
         """;
 
         mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Descanso médico"));
 
         ArgumentCaptor<JustificationType> captor = ArgumentCaptor.forClass(JustificationType.class);
-        verify(justificationTypeService).save(captor.capture());
+        verify(justificationTypeService).create(captor.capture());
         assertThat(captor.getValue().getId()).isNull();
         assertThat(captor.getValue().getName()).isEqualTo("Descanso médico");
     }
 
     @Test
-    void save_update_conId_return200() throws Exception {
+    void create_sinBody_retorna400() throws Exception {
+        mockMvc.perform(post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(justificationTypeService, never()).create(any());
+    }
+
+    // ---------- PUT /v1/template/justification-type ----------
+
+    @Test
+    void update_conId_return200() throws Exception {
         String body = """
                 {
                   "id": 1,
@@ -144,24 +155,24 @@ public class JustificationTypeControllerTest {
                 }
         """;
 
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
+        mockMvc.perform(put(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
 
         ArgumentCaptor<JustificationType> captor = ArgumentCaptor.forClass(JustificationType.class);
-        verify(justificationTypeService).save(captor.capture());
+        verify(justificationTypeService).update(captor.capture());
         assertThat(captor.getValue().getId()).isEqualTo(1L);
     }
 
     @Test
-    void save_sinId_Body_retorna400() throws Exception {
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON))
+    void update_sinBody_retorna400() throws Exception {
+        mockMvc.perform(put(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        verify(justificationTypeService, never()).save(any());
+        verify(justificationTypeService, never()).update(any());
     }
 
     // ---------- DELETE /v1/template/justification-type/{id} ----------

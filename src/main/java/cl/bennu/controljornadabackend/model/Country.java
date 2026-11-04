@@ -16,11 +16,12 @@ public class Country extends BaseDomain implements Serializable {
     private String name;
     private String nationality;
     private List<Region> regions;
+    private Boolean active;
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static Justification valueOf(Long id) {
-        Justification justification = new Justification();
-        justification.setId(id);
-        return justification;
+    public static Country valueOf(Long id) {
+        Country o = new Country();
+        o.setId(id);
+        return o;
     }
 }

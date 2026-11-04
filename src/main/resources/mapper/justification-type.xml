@@ -30,8 +30,10 @@
     <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.JustificationType" keyProperty="id" useGeneratedKeys="true">
         <!-- @formatter:off -->
         INSERT INTO justification_type (
+            id,
             name
         ) VALUES (
+            (SELECT COALESCE(MAX(id), 0) + 1 FROM justification_type),
             #{name}
         )
         <!-- @formatter:on -->
@@ -45,7 +47,7 @@
         <!-- @formatter:on -->
     </update>
 
-    <delete id="deleteById">
+    <delete id="delete">
         DELETE FROM justification_type WHERE id = #{id}
     </delete>
 

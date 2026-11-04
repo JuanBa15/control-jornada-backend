@@ -26,8 +26,14 @@ public class RegionController extends BaseController {
     }
 
     @PostMapping(ENDPOINT)
-    public ResponseEntity<Region> save(@RequestBody Region region) {
-        regionService.saveRegion(region);
+    public ResponseEntity<Region> create(@RequestBody Region region) {
+        regionService.createRegion(region);
+        return ResponseEntity.ok(region);
+    }
+
+    @PutMapping(ENDPOINT + "/{id}")
+    public ResponseEntity<Region> update(@PathVariable Long id, @RequestBody Region region) {
+        regionService.updateRegion(id, region);
         return ResponseEntity.ok(region);
     }
 

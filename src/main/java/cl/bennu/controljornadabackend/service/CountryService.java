@@ -19,14 +19,25 @@ public class CountryService {
         return countryMapper.getAll();
     }
 
+//    @Transactional
+//    public void save(Country country) {
+//        if (null == country.getId()) {
+//            countryMapper.insert(country);
+//        } else {
+//            countryMapper.update(country);
+//        }
+//    }
+
     @Transactional
-    public void save(Country country) {
-        if (null == country.getId()) {
-            countryMapper.insert(country);
-        } else {
-            countryMapper.update(country);
-        }
+    public void insert(Country country) {
+        countryMapper.insert(country);
     }
+
+    @Transactional
+    public void update(Country country) {
+        countryMapper.update(country);
+    }
+
 
     public Country getById(Long id) {
         return countryMapper.get(id);

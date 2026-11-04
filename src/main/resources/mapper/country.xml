@@ -41,14 +41,20 @@
 
     <insert id="insert"
             parameterType="cl.bennu.controljornadabackend.model.Country"
+            keyProperty="id"
+            useGeneratedKeys="true"
     >
         INSERT INTO country (
+            id,
             name,
-            nationality
+            nationality,
+            active
         )
         VALUES (
+            (SELECT COALESCE(MAX(id), 0) + 1 FROM country),
             #{name},
-            #{nationality}
+            #{nationality},
+            true
         )
     </insert>
 

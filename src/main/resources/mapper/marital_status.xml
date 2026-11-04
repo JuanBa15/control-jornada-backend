@@ -26,14 +26,17 @@
         <include refid="sqlMaritalStatus"/>
         WHERE ms.id = #{id}
     </select>
-
-    <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.MaritalStatus" keyProperty="id" useGeneratedKeys="true">
+    
+    <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.MaritalStatus"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         <!-- @formatter:off -->
         INSERT INTO marital_status (
-            name
+            id, name
         ) VALUES (
+            (SELECT COALESCE(MAX(id), 0) + 1 FROM marital_status ms),
             #{name}
         )
+        RETURNING id
         <!-- @formatter:on -->
     </insert>
 
@@ -45,7 +48,7 @@
         <!-- @formatter:on -->
     </update>
 
-    <delete id="deleteById">
+    <delete id="delete">
         DELETE FROM marital_status WHERE id = #{id}
     </delete>
 

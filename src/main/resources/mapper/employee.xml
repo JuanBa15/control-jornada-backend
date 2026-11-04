@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cl.bennu.controljornadabackend.mapper.EmployeeMapper">
+
+    <!-- ******************************  -->
+    <!-- Columnas de tabla y atributos de clases -->
+    <!-- ******************************  -->
+    <resultMap id="employeeMap" type="cl.bennu.controljornadabackend.model.Employee">
+        <id     property="id"              column="id"/>
+        <result property="uuid"            column="uuid"/>
+        <result property="code"            column="code"/>
+        <result property="name"            column="name"/>
+        <result property="lastName"        column="last_name"/>
+        <result property="motherLastName"  column="mother_last_name"/>
+        <result property="birthDate"       column="birth_date"/>
+        <result property="phone"           column="phone"/>
+        <result property="email"           column="email"/>
+        <result property="address"         column="address"/>
+        <result property="contractDate"    column="contract_date"/>
+        <result property="contractEndDate" column="contract_end_date"/>
+        <result property="active"          column="active"/>
+
+        <association property="branch" javaType="cl.bennu.controljornadabackend.model.Branch">
+            <id     property="id"   column="branch_id"/>
+            <result property="name" column="branch_name"/>
+        </association>
+
+        <association property="jobScheduler" javaType="cl.bennu.controljornadabackend.model.JobScheduler">
+            <id     property="id"   column="job_scheduler_id"/>
+            <result property="name" column="job_scheduler_name"/>
+        </association>
+
+        <association property="commune" javaType="cl.bennu.controljornadabackend.model.Commune">
+            <id     property="id"   column="commune_id"/>
+            <result property="name" column="commune_name"/>
+        </association>
+
+        <association property="country" javaType="cl.bennu.controljornadabackend.model.Country">
+            <id     property="id"          column="nationality_id"/>
+            <result property="name"        column="country_name"/>
+            <result property="nationality" column="country_nationality"/>
+        </association>
+
+        <association property="gender" javaType="cl.bennu.controljornadabackend.model.Gender">
+            <id     property="id"   column="gender_id"/>
+            <result property="name" column="gender_name"/>
+        </association>
+
+        <association property="maritalStatus" javaType="cl.bennu.controljornadabackend.model.MaritalStatus">
+            <id     property="id"   column="marital_status_id"/>
+            <result property="name" column="marital_status_name"/>
+        </association>
+
+        <association property="contractType" javaType="cl.bennu.controljornadabackend.model.ContractType">
+            <id     property="id"   column="contract_type_id"/>
+            <result property="name" column="contract_type_name"/>
+        </association>
+
+        <association property="jobType" javaType="cl.bennu.controljornadabackend.model.JobType">
+            <id     property="id"   column="job_type_id"/>
+            <result property="name" column="job_type_name"/>
+        </association>
+    </resultMap>
+
+
+
+    <!-- ******************************  -->
+    <!-- Operaciones CRUD -->
+    <!-- ******************************  -->
+    <sql id="sqlEmployee">
+        SELECT
+        e.id,
+        e.uuid,
+        e.code,
+        e.name,
+        e.last_name,
+        e.mother_last_name,
+        e.birth_date,
+        e.phone,
+        e.email,
+        e.address,
+        e.contract_date,
+        e.contract_end_date,
+        e.active,
+
+        e.branch_id,
+        b.name          AS branch_name,
+        e.job_scheduler_id,
+        js.name         AS job_scheduler_name,
+        e.commune_id,
+        cm.name         AS commune_name,
+        e.nationality_id,
+        co.name         AS country_name,
+        co.nationality  AS country_nationality,
+        e.gender_id,
+        g.name          AS gender_name,
+        e.marital_status_id,
+        ms.name         AS marital_status_name,
+        e.contract_type_id,
+        ct.name         AS contract_type_name,
+        e.job_type_id,
+        jt.name         AS job_type_name
+        FROM employee e
+        INNER JOIN branch b          ON b.id  = e.branch_id
+        INNER JOIN job_scheduler js  ON js.id = e.job_scheduler_id
+        INNER JOIN commune cm        ON cm.id = e.commune_id
+        INNER JOIN country co        ON co.id = e.nationality_id
+        INNER JOIN gender g          ON g.id  = e.gender_id
+        INNER JOIN marital_status ms ON ms.id = e.marital_status_id
+        LEFT  JOIN contract_type ct  ON ct.id = e.contract_type_id
+        INNER JOIN job_type jt       ON jt.id = e.job_type_id
+    </sql>
+
+    <select id="getAll" resultMap="employeeMap">
+        <include refid="sqlEmployee"/>
+        ORDER BY e.last_name, e.name
+    </select>
+
+    <select id="get" resultMap="employeeMap"
+            parameterType="java.lang.Long"
+    >
+        <include refid="sqlEmployee"/>
+        WHERE e.id = #{id}
+    </select>
+
+    <select id="getByCode" resultMap="employeeMap"
+            parameterType="java.lang.String"
+    >
+        <include refid="sqlEmployee"/>
+        WHERE e.code = #{code}
+    </select>
+
+    <select id="getByBranch" resultMap="employeeMap"
+            parameterType="java.lang.Long"
+    >
+        <include refid="sqlEmployee"/>
+        WHERE e.branch_id = #{branchId}
+        ORDER BY e.last_name, e.name
+    </select>
+
+
+    <!-- id es SERIAL: lo genera la secuencia, no hace falta MAX(id)+1 -->
+    <insert id="insert"
+            parameterType="cl.bennu.controljornadabackend.model.Employee"
+            keyProperty="id"
+            keyColumn="id"
+            useGeneratedKeys="true"
+    >
+        INSERT INTO employee (
+        uuid,
+        branch_id,
+        job_scheduler_id,
+        commune_id,
+        nationality_id,
+        gender_id,
+        marital_status_id,
+        contract_type_id,
+        job_type_id,
+        code,
+        name,
+        last_name,
+        mother_last_name,
+        birth_date,
+        phone,
+        email,
+        address,
+        contract_date,
+        contract_end_date,
+        active
+        )
+        VALUES (
+        #{uuid},
+        #{branch.id},
+        #{jobScheduler.id},
+        #{commune.id},
+        #{country.id},
+        #{gender.id},
+        #{maritalStatus.id},
+        #{contractType.id, jdbcType=INTEGER},
+        #{jobType.id},
+        #{code},
+        #{name},
+        #{lastName},
+        #{motherLastName, jdbcType=VARCHAR},
+        #{birthDate, jdbcType=DATE},
+        #{phone, jdbcType=VARCHAR},
+        #{email, jdbcType=VARCHAR},
+        #{address},
+        #{contractDate, jdbcType=DATE},
+        #{contractEndDate, jdbcType=DATE},
+        #{active}
+        )
+    </insert>
+
+
+    <update id="update"
+            parameterType="cl.bennu.controljornadabackend.model.Employee">
+        UPDATE employee SET
+        uuid              = #{uuid},
+        branch_id         = #{branch.id},
+        job_scheduler_id  = #{jobScheduler.id},
+        commune_id        = #{commune.id},
+        nationality_id    = #{country.id},
+        gender_id         = #{gender.id},
+        marital_status_id = #{maritalStatus.id},
+        contract_type_id  = #{contractType.id, jdbcType=INTEGER},
+        job_type_id       = #{jobType.id},
+        code              = #{code},
+        name              = #{name},
+        last_name         = #{lastName},
+        mother_last_name  = #{motherLastName, jdbcType=VARCHAR},
+        birth_date        = #{birthDate, jdbcType=DATE},
+        phone             = #{phone, jdbcType=VARCHAR},
+        email             = #{email, jdbcType=VARCHAR},
+        address           = #{address},
+        contract_date     = #{contractDate, jdbcType=DATE},
+        contract_end_date = #{contractEndDate, jdbcType=DATE},
+        active            = #{active}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM employee
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
