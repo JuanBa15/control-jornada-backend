@@ -2,6 +2,8 @@ package cl.bennu.controljornadabackend.service;
 
 import cl.bennu.controljornadabackend.mapper.JobTypeMapper;
 import cl.bennu.controljornadabackend.model.JobType;
+import cl.bennu.controljornadabackend.model.Company;
+import cl.bennu.controljornadabackend.model.Branch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,8 +23,8 @@ class JobTypeServiceTest {
         JobType value = jobType();
         when(mapper.getAll()).thenReturn(List.of(value));
         assertThat(service.getAllJobTypes()).hasSize(1);
-        assertThat(service.getAllJobTypes().getFirst().getCompanyName()).isEqualTo("Bennu SA");
-        assertThat(service.getAllJobTypes().getFirst().getBranchName()).isEqualTo("Sucursal Centro");
+        assertThat(service.getAllJobTypes().getFirst().getCompany().getName()).isEqualTo("Bennu SA");
+        assertThat(service.getAllJobTypes().getFirst().getBranch().getName()).isEqualTo("Sucursal Centro");
     }
 
     @Test void getById_devuelveLoDelMapper() {
@@ -35,8 +37,10 @@ class JobTypeServiceTest {
         JobType value = new JobType();
         value.setId(1L);
         value.setName("Analista");
-        value.setCompanyName("Bennu SA");
-        value.setBranchName("Sucursal Centro");
+        Company company = new Company(); company.setId(1L); company.setName("Bennu SA");
+        Branch branch = new Branch(); branch.setId(1L); branch.setName("Sucursal Centro");
+        value.setCompany(company);
+        value.setBranch(branch);
         return value;
     }
 

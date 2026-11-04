@@ -2,6 +2,8 @@ package cl.bennu.controljornadabackend.controller;
 
 import cl.bennu.controljornadabackend.constants.Constants;
 import cl.bennu.controljornadabackend.model.JobType;
+import cl.bennu.controljornadabackend.model.Company;
+import cl.bennu.controljornadabackend.model.Branch;
 import cl.bennu.controljornadabackend.service.JobTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class JobTypeControllerTest {
     private static final String URL = Constants.BASE_API + "/job-type";
-    private static final String JSON = "{\"name\":\"Analista\",\"companyId\":1,\"branchId\":1}";
+    private static final String JSON = "{\"name\":\"Analista\",\"company\":{\"id\":1},\"branch\":{\"id\":1}}";
     @Mock private JobTypeService service;
     @InjectMocks private JobTypeController controller;
     private MockMvc mockMvc;
@@ -35,8 +37,8 @@ class JobTypeControllerTest {
         JobType value = jobType();
         when(service.getAllJobTypes()).thenReturn(List.of(value));
         mockMvc.perform(get(URL)).andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].companyName").value("Bennu SA"))
-                .andExpect(jsonPath("$[0].branchName").value("Sucursal Centro"));
+                .andExpect(jsonPath("$[0].company.name").value("Bennu SA"))
+                .andExpect(jsonPath("$[0].branch.name").value("Sucursal Centro"));
     }
 
     @Test void getById_responde200() throws Exception {
@@ -44,18 +46,18 @@ class JobTypeControllerTest {
         when(service.getJobTypeById(1L)).thenReturn(value);
         mockMvc.perform(get(URL + "/1")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.companyName").value("Bennu SA"))
-                .andExpect(jsonPath("$.branchName").value("Sucursal Centro"));
+                .andExpect(jsonPath("$.company.name").value("Bennu SA"))
+                .andExpect(jsonPath("$.branch.name").value("Sucursal Centro"));
     }
 
     private JobType jobType() {
         JobType value = new JobType();
         value.setId(1L);
         value.setName("Analista");
-        value.setCompanyId(1L);
-        value.setBranchId(1L);
-        value.setCompanyName("Bennu SA");
-        value.setBranchName("Sucursal Centro");
+        Company company = new Company(); company.setId(1L); company.setName("Bennu SA");
+        Branch branch = new Branch(); branch.setId(1L); branch.setName("Sucursal Centro");
+        value.setCompany(company);
+        value.setBranch(branch);
         return value;
     }
 
@@ -63,7 +65,7 @@ class JobTypeControllerTest {
         mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(JSON)).andExpect(status().isOk());
         ArgumentCaptor<JobType> captor = ArgumentCaptor.forClass(JobType.class);
         verify(service).insertJobType(captor.capture());
-        assertThat(captor.getValue().getCompanyId()).isEqualTo(1L);
+        assertThat(captor.getValue().getCompany().getId()).isEqualTo(1L);
     }
 
     @Test void update_usaElIdDeLaUrl() throws Exception {

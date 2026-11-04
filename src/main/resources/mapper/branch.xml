@@ -6,15 +6,19 @@
 
     <resultMap id="branchMap" type="cl.bennu.controljornadabackend.model.Branch">
         <id property="id" column="id"/>
-        <result property="companyId" column="company_id"/>
-        <result property="communeId" column="commune_id"/>
-        <result property="companyName" column="company_name"/>
-        <result property="communeName" column="commune_name"/>
         <result property="name" column="name"/>
         <result property="address" column="address"/>
         <result property="phone" column="phone"/>
         <result property="alias" column="alias"/>
         <result property="active" column="active"/>
+        <association property="company" javaType="cl.bennu.controljornadabackend.model.Company">
+            <id property="id" column="company_id"/>
+            <result property="name" column="company_name"/>
+        </association>
+        <association property="commune" javaType="cl.bennu.controljornadabackend.model.Commune">
+            <id property="id" column="commune_id"/>
+            <result property="name" column="commune_name"/>
+        </association>
     </resultMap>
 
     <sql id="sqlBranch">
@@ -56,8 +60,8 @@
             , alias
             , active
         ) VALUES (
-            #{companyId}
-            , #{communeId}
+            #{company.id}
+            , #{commune.id}
             , #{name}
             , #{address}
             , #{phone}
@@ -68,8 +72,8 @@
 
     <update id="update" parameterType="cl.bennu.controljornadabackend.model.Branch">
         UPDATE branch SET
-            company_id = #{companyId}
-            , commune_id = #{communeId}
+            company_id = #{company.id}
+            , commune_id = #{commune.id}
             , name = #{name}
             , address = #{address}
             , phone = #{phone}

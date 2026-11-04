@@ -2,6 +2,8 @@ package cl.bennu.controljornadabackend.controller;
 
 import cl.bennu.controljornadabackend.constants.Constants;
 import cl.bennu.controljornadabackend.model.Branch;
+import cl.bennu.controljornadabackend.model.Company;
+import cl.bennu.controljornadabackend.model.Commune;
 import cl.bennu.controljornadabackend.service.BranchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,8 @@ class BranchControllerTest {
 
     private static final String BRANCH_JSON = """
             {
-                "companyId": 1,
-                "communeId": 1,
+                "company": { "id": 1 },
+                "commune": { "id": 1 },
                 "name": "Sucursal Centro",
                 "address": "Av. Siempre Viva 123",
                 "phone": "+56912345678",
@@ -55,10 +57,14 @@ class BranchControllerTest {
     private Branch branch() {
         Branch branch = new Branch();
         branch.setId(1L);
-        branch.setCompanyId(1L);
-        branch.setCommuneId(1L);
-        branch.setCompanyName("Bennu SA");
-        branch.setCommuneName("Santiago");
+        Company company = new Company();
+        company.setId(1L);
+        company.setName("Bennu SA");
+        Commune commune = new Commune();
+        commune.setId(1L);
+        commune.setName("Santiago");
+        branch.setCompany(company);
+        branch.setCommune(commune);
         branch.setName("Sucursal Centro");
         branch.setAddress("Av. Siempre Viva 123");
         branch.setPhone("+56912345678");
@@ -75,8 +81,10 @@ class BranchControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("Sucursal Centro"))
-                .andExpect(jsonPath("$[0].companyName").value("Bennu SA"))
-                .andExpect(jsonPath("$[0].communeName").value("Santiago"));
+                .andExpect(jsonPath("$[0].company.id").value(1))
+                .andExpect(jsonPath("$[0].company.name").value("Bennu SA"))
+                .andExpect(jsonPath("$[0].commune.id").value(1))
+                .andExpect(jsonPath("$[0].commune.name").value("Santiago"));
     }
 
     @Test
@@ -87,8 +95,8 @@ class BranchControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Sucursal Centro"))
-                .andExpect(jsonPath("$.companyName").value("Bennu SA"))
-                .andExpect(jsonPath("$.communeName").value("Santiago"));
+                .andExpect(jsonPath("$.company.name").value("Bennu SA"))
+                .andExpect(jsonPath("$.commune.name").value("Santiago"));
     }
 
     @Test
@@ -101,7 +109,7 @@ class BranchControllerTest {
 
         ArgumentCaptor<Branch> captor = ArgumentCaptor.forClass(Branch.class);
         verify(branchService).insert(captor.capture());
-        assertThat(captor.getValue().getCompanyId()).isEqualTo(1L);
+        assertThat(captor.getValue().getCompany().getId()).isEqualTo(1L);
         assertThat(captor.getValue().getActive()).isTrue();
     }
 

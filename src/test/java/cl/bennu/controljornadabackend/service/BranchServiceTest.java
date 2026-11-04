@@ -2,6 +2,8 @@ package cl.bennu.controljornadabackend.service;
 
 import cl.bennu.controljornadabackend.mapper.BranchMapper;
 import cl.bennu.controljornadabackend.model.Branch;
+import cl.bennu.controljornadabackend.model.Company;
+import cl.bennu.controljornadabackend.model.Commune;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,10 +28,14 @@ class BranchServiceTest {
     private Branch branch() {
         Branch branch = new Branch();
         branch.setId(1L);
-        branch.setCompanyId(1L);
-        branch.setCommuneId(1L);
-        branch.setCompanyName("Bennu SA");
-        branch.setCommuneName("Santiago");
+        Company company = new Company();
+        company.setId(1L);
+        company.setName("Bennu SA");
+        Commune commune = new Commune();
+        commune.setId(1L);
+        commune.setName("Santiago");
+        branch.setCompany(company);
+        branch.setCommune(commune);
         branch.setName("Sucursal Centro");
         branch.setAddress("Av. Siempre Viva 123");
         branch.setPhone("+56912345678");
@@ -46,8 +52,8 @@ class BranchServiceTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.getFirst().getName()).isEqualTo("Sucursal Centro");
-        assertThat(result.getFirst().getCompanyName()).isEqualTo("Bennu SA");
-        assertThat(result.getFirst().getCommuneName()).isEqualTo("Santiago");
+        assertThat(result.getFirst().getCompany().getName()).isEqualTo("Bennu SA");
+        assertThat(result.getFirst().getCommune().getName()).isEqualTo("Santiago");
     }
 
     @Test
