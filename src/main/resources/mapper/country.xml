@@ -47,12 +47,14 @@
         INSERT INTO country (
             id,
             name,
-            nationality
+            nationality,
+            active
         )
         VALUES (
             (SELECT COALESCE(MAX(id), 0) + 1 FROM country),
             #{name},
-            #{nationality}
+            #{nationality},
+            true
         )
     </insert>
 

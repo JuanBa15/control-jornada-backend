@@ -16,6 +16,7 @@ public class Country extends BaseDomain implements Serializable {
     private String name;
     private String nationality;
     private List<Region> regions;
+    private Boolean active;
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static Country valueOf(Long id) {
