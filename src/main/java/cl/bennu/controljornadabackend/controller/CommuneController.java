@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,9 +33,15 @@ public class CommuneController extends BaseController {
     }
 
     @PostMapping(ENDPOINT)
-    public ResponseEntity<?> save(@RequestBody Commune justTypes) {
-        communeService.save(justTypes);
-        return ok(justTypes);
+    public ResponseEntity<?> create(@RequestBody Commune commune) {
+        communeService.create(commune);
+        return ok(commune);
+    }
+
+    @PutMapping(ENDPOINT)
+    public ResponseEntity<?> update(@RequestBody Commune commune) {
+        communeService.update(commune);
+        return ok(commune);
     }
 
     @GetMapping(ENDPOINT + "/{id}")

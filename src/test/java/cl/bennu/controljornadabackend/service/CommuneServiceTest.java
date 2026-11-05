@@ -16,7 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import cl.bennu.controljornadabackend.mapper.CommuneMapper;
+import cl.bennu.controljornadabackend.model.City;
 import cl.bennu.controljornadabackend.model.Commune;
+import cl.bennu.controljornadabackend.model.Country;
+import cl.bennu.controljornadabackend.model.Region;
 
 @ExtendWith(MockitoExtension.class)
 public class CommuneServiceTest {
@@ -29,10 +32,24 @@ public class CommuneServiceTest {
     private Commune commune() {
         Commune c = new Commune();
         c.setId(1L);
-        c.setCityId(1L);
         c.setName("Santiago");
         c.setSiiCode("13101");
         c.setTgrCode("070");
+
+        City city = new City();
+        city.setId(1L);
+        city.setName("Santiago");
+        c.setCity(city);
+
+        Region region = new Region();
+        region.setId(1L);
+        region.setName("RM");
+        c.setRegion(region);
+
+        Country country = new Country();
+        country.setId(1L);
+        country.setName("Chile");
+        c.setCountry(country);
 
         return c;
     }
@@ -45,6 +62,9 @@ public class CommuneServiceTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getName()).isEqualTo("Santiago");
+        assertThat(result.get(0).getCity().getName()).isEqualTo("Santiago");
+        assertThat(result.get(0).getRegion().getName()).isEqualTo("RM");
+        assertThat(result.get(0).getCountry().getName()).isEqualTo("Chile");
     }
 
     @Test
@@ -63,22 +83,22 @@ public class CommuneServiceTest {
     }
 
     @Test
-    void saveCommune_llamaAlInsertDelMapper() {
+    void create_llamaAlInsertDelMapper() {
         Commune c = commune();
         c.setId(null);
 
-        communeService.save(c);
+        communeService.create(c);
 
         verify(communeMapper).insert(c);
         verify(communeMapper, never()).update(any());
     }
 
     @Test
-    void saveCommune_llamaAlUpdateDelMapper() {
+    void update_llamaAlUpdateDelMapper() {
         Commune c = commune();
         // => ID no nulo
 
-        communeService.save(c);
+        communeService.update(c);
 
         verify(communeMapper).update(c);
         verify(communeMapper, never()).insert(any());

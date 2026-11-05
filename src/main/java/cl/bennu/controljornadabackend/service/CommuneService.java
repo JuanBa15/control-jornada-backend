@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import cl.bennu.controljornadabackend.mapper.CommuneMapper;
 import cl.bennu.controljornadabackend.model.Commune;
@@ -17,13 +16,12 @@ public class CommuneService {
         return communeMapper.getAll();
     }
 
-    @Transactional
-    public void save(Commune commune) {
-        if (null == commune.getId()) {
-            communeMapper.insert(commune);
-        } else {
-            communeMapper.update(commune);
-        }
+    public void create(Commune commune) {
+        communeMapper.insert(commune);
+    }
+
+    public void update(Commune commune) {
+        communeMapper.update(commune);
     }
 
     public Commune getById(Long id) {

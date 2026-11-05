@@ -10,14 +10,40 @@
         <result property="name" column="name"/>
         <result property="siiCode" column="sii_code"/>
         <result property="tgrCode" column="tgr_code"/>
+
+        <association property="city" javaType="cl.bennu.controljornadabackend.model.City">
+            <id property="id" column="city_id"/>
+            <result property="name" column="city_name"/>
+        </association>
+
+        <association property="region" javaType="cl.bennu.controljornadabackend.model.Region">
+            <id property="id" column="region_id"/>
+            <result property="name" column="region_name"/>
+        </association>
+
+        <association property="country" javaType="cl.bennu.controljornadabackend.model.Country">
+            <id property="id" column="country_id"/>
+            <result property="name" column="country_name"/>
+        </association>
     </resultMap>
 
     <sql id="sqlCommune">
         <!-- @formatter:off -->
         SELECT
-            c.id
-            , c.name
-        FROM commune c
+            com.id AS id
+            , com.name AS name
+            , com.sii_code AS sii_code
+            , com.tgr_code AS tgr_code
+            , ci.id AS city_id
+            , ci.name AS city_name
+            , re.id AS region_id
+            , re.name AS region_name
+            , cou.id AS country_id
+            , cou.name AS country_name
+        FROM commune com
+        INNER JOIN city ci ON com.city_id = ci.id
+        INNER JOIN region re ON ci.region_id = re.id
+        INNER JOIN country cou ON re.country_id = cou.id
         <!-- @formatter:on -->
     </sql>
 
@@ -27,18 +53,20 @@
 
     <select id="get" resultMap="communeMap" parameterType="java.lang.Long">
         <include refid="sqlCommune"/>
-        WHERE c.id = #{id}
+        WHERE com.id = #{id}
     </select>
 
     <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.Commune" keyProperty="id" useGeneratedKeys="true">
         <!-- @formatter:off -->
         INSERT INTO commune (
-            city_id
+            id
+            , city_id
             , name
             , sii_code
             , tgr_code
         ) VALUES (
-            #{cityId}
+            (SELECT COALESCE(MAX(id), 0) + 1 FROM commune)
+            , #{cityId}
             , #{name}
             , #{siiCode}
             , #{tgrCode}
@@ -57,7 +85,7 @@
         <!-- @formatter:on -->
     </update>
 
-    <delete id="deleteById">
+    <delete id="delete">
         DELETE FROM commune WHERE id = #{id}
     </delete>
 

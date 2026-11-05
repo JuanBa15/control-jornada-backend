@@ -27,6 +27,9 @@ import java.util.List;
 import cl.bennu.controljornadabackend.constants.Constants;
 import cl.bennu.controljornadabackend.service.CommuneService;
 import cl.bennu.controljornadabackend.model.Commune;
+import cl.bennu.controljornadabackend.model.City;
+import cl.bennu.controljornadabackend.model.Region;
+import cl.bennu.controljornadabackend.model.Country;
 
 @ExtendWith(MockitoExtension.class)
 public class CommuneControllerTest {
@@ -49,17 +52,32 @@ public class CommuneControllerTest {
     }
 
     private Commune Commune() {
-        Commune commune = new Commune();
-        commune.setId(1L);
-        commune.setCityId(1L);
-        commune.setName("Santiago");
-        commune.setSiiCode("13101");
-        commune.setTgrCode("070");
+        Commune c = new Commune();
 
-        return commune;
+        c.setId(1L);
+        c.setName("Santiago");
+        c.setSiiCode("13101");
+        c.setTgrCode("070");
+
+        City city = new City();
+        city.setId(1L);
+        city.setName("Santiago");
+        c.setCity(city);
+
+        Region region = new Region();
+        region.setId(1L);
+        region.setName("RM");
+        c.setRegion(region);
+
+        Country country = new Country();
+        country.setId(1L);
+        country.setName("Chile");
+        c.setCountry(country);
+
+        return c;
     }
 
-    // ---------- GET /v1/template/justification-type ----------
+    // ---------- GET /v1/template/commune ----------
 
     @Test
     void getAll_ok_retornaLista_return200() throws Exception {
@@ -70,10 +88,12 @@ public class CommuneControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].cityId").value(1))
                 .andExpect(jsonPath("$[0].name").value("Santiago"))
                 .andExpect(jsonPath("$[0].siiCode").value("13101"))
-                .andExpect(jsonPath("$[0].tgrCode").value("070"));
+                .andExpect(jsonPath("$[0].tgrCode").value("070"))
+                .andExpect(jsonPath("$[0].city.name").value("Santiago"))
+                .andExpect(jsonPath("$[0].region.name").value("RM"))
+                .andExpect(jsonPath("$[0].country.name").value("Chile"));
 
         verify(communeService).getAll();
     }
@@ -87,7 +107,7 @@ public class CommuneControllerTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
-    // ---------- GET /v1/template/justification-type/{id} ----------
+    // ---------- GET /v1/template/commune/{id} ----------
 
     @Test
     void getById_ok_retorna200() throws Exception {
@@ -96,10 +116,12 @@ public class CommuneControllerTest {
         mockMvc.perform(get(ENDPOINT + "/" + idOk))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.cityId").value(1))
                 .andExpect(jsonPath("$.name").value("Santiago"))
                 .andExpect(jsonPath("$.siiCode").value("13101"))
-                .andExpect(jsonPath("$.tgrCode").value("070"));
+                .andExpect(jsonPath("$.tgrCode").value("070"))
+                .andExpect(jsonPath("$.city.name").value("Santiago"))
+                .andExpect(jsonPath("$.region.name").value("RM"))
+                .andExpect(jsonPath("$.country.name").value("Chile"));
 
         verify(communeService).getById(idOk);
     }
@@ -122,10 +144,10 @@ public class CommuneControllerTest {
         verifyNoInteractions(communeService);
     }
 
-    // ---------- POST /v1/template/justification-type ----------
+    // ---------- POST /v1/template/commune ----------
 
     @Test
-    void save_insert_conId_return200() throws Exception {
+    void create_sinId_return200() throws Exception {
         String json = """
                 {
                   "cityId": 1,
@@ -136,19 +158,30 @@ public class CommuneControllerTest {
         """;
 
         mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Santiago"));
 
         ArgumentCaptor<Commune> captor = ArgumentCaptor.forClass(Commune.class);
-        verify(communeService).save(captor.capture());
+        verify(communeService).create(captor.capture());
         assertThat(captor.getValue().getId()).isNull();
         assertThat(captor.getValue().getName()).isEqualTo("Santiago");
     }
 
     @Test
-    void save_update_conId_return200() throws Exception {
+    void create_sinBody_retorna400() throws Exception {
+        mockMvc.perform(post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(communeService, never()).create(any());
+    }
+
+    // ---------- PUT /v1/template/commune ----------
+
+    @Test
+    void update_conId_return200() throws Exception {
         String body = """
                 {
                   "id": 1,  
@@ -159,27 +192,27 @@ public class CommuneControllerTest {
                 }
         """;
 
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
+        mockMvc.perform(put(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
 
         ArgumentCaptor<Commune> captor = ArgumentCaptor.forClass(Commune.class);
-        verify(communeService).save(captor.capture());
+        verify(communeService).update(captor.capture());
         assertThat(captor.getValue().getId()).isEqualTo(1L);
     }
 
     @Test
-    void save_sinId_Body_retorna400() throws Exception {
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON))
+    void update_sinBody_retorna400() throws Exception {
+        mockMvc.perform(put(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        verify(communeService, never()).save(any());
+        verify(communeService, never()).update(any());
     }
 
-    // ---------- DELETE /v1/template/justification-type/{id} ----------
+    // ---------- DELETE /v1/template/commune/{id} ----------
 
     @Test
     void delete_ok_return200() throws Exception {
