@@ -1,6 +1,7 @@
 package cl.bennu.controljornadabackend.service;
 
 import cl.bennu.controljornadabackend.mapper.CompanyMapper;
+import cl.bennu.controljornadabackend.model.Commune;
 import cl.bennu.controljornadabackend.model.Company;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,8 @@ public class CompanyServiceTest {
     private Company company() {
         Company c = new Company();
         c.setId(1L);
-        c.setCommuneId(1L);
+        c.setCommune(new Commune());
+        c.getCommune().setId(1L);
         c.setCode("83686157-4");
         c.setName("Bennu SA");
         c.setAddress("Av. Siempre Viva 123");

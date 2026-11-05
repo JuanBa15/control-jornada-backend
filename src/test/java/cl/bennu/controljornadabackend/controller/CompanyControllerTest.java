@@ -1,6 +1,7 @@
 package cl.bennu.controljornadabackend.controller;
 
 import cl.bennu.controljornadabackend.constants.Constants;
+import cl.bennu.controljornadabackend.model.Commune;
 import cl.bennu.controljornadabackend.model.Company;
 import cl.bennu.controljornadabackend.service.CompanyService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,7 @@ class CompanyControllerTest {
 
     private static final String COMPANY_JSON = """
             {
-                "communeId": 1,
+                "commune": { "id": 1 },
                 "code": "76000011-1",
                 "name": "Taller Mecánico Rueda",
                 "address": "Av. Lo Espejo 500",
@@ -59,7 +60,8 @@ class CompanyControllerTest {
     private Company company() {
         Company c = new Company();
         c.setId(1L);
-        c.setCommuneId(1L);
+        c.setCommune(new Commune());
+        c.getCommune().setId(1L);
         c.setCode("76000001-1");
         c.setName("Bennu SA");
         c.setAddress("Av. Siempre Viva 123");
@@ -90,6 +92,16 @@ class CompanyControllerTest {
     }
 
     @Test
+    void getById_noExiste_responde404() throws Exception {
+        when(companyService.getById(99L)).thenReturn(null);
+
+        mockMvc.perform(get(URL + "/99"))
+                .andExpect(status().isNotFound());
+
+        verify(companyService).getById(99L);
+    }
+
+    @Test
     void create_convierteElJsonYLlamaAlInsert() throws Exception {
         mockMvc.perform(post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,6 +117,8 @@ class CompanyControllerTest {
 
     @Test
     void update_usaElIdDeLaUrl() throws Exception {
+        when(companyService.getById(5L)).thenReturn(company());
+
         mockMvc.perform(put(URL + "/5")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(COMPANY_JSON))
@@ -116,10 +130,34 @@ class CompanyControllerTest {
     }
 
     @Test
+    void update_noExiste_responde404() throws Exception {
+        when(companyService.getById(99L)).thenReturn(null);
+
+        mockMvc.perform(put(URL + "/99")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(COMPANY_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(companyService, never()).update(any());
+    }
+
+    @Test
     void delete_responde200YLlamaAlDelete() throws Exception {
+        when(companyService.getById(1L)).thenReturn(company());
+
         mockMvc.perform(delete(URL + "/1"))
                 .andExpect(status().isOk());
 
         verify(companyService).delete(1L);
+    }
+
+    @Test
+    void delete_noExiste_responde404() throws Exception {
+        when(companyService.getById(99L)).thenReturn(null);
+
+        mockMvc.perform(delete(URL + "/99"))
+                .andExpect(status().isNotFound());
+
+        verify(companyService, never()).delete(any());
     }
 }
