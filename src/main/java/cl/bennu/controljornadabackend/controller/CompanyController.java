@@ -33,6 +33,9 @@ public class CompanyController extends BaseController {
 
     @PutMapping(ENDPOINT + "/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Company company) {
+        if (companyService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
         company.setId(id);
         companyService.update(company);
         return ok(company);
@@ -41,11 +44,17 @@ public class CompanyController extends BaseController {
     @GetMapping(ENDPOINT + "/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         Company company = companyService.getById(id);
+        if (company == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ok(company);
     }
 
     @DeleteMapping(ENDPOINT + "/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
+        if (companyService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
         companyService.delete(id);
         return ok();
     }

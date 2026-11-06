@@ -2,6 +2,7 @@ package cl.bennu.controljornadabackend.service;
 
 import cl.bennu.controljornadabackend.mapper.CityMapper;
 import cl.bennu.controljornadabackend.model.City;
+import cl.bennu.controljornadabackend.model.Region;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +26,7 @@ class CityServiceTest {
     private City city() {
         City c = new City();
         c.setId(1L);
-        c.setRegionId(1L);
+        c.setRegion(Region.valueOf(1L));
         c.setName("Santiago");
         return c;
     }

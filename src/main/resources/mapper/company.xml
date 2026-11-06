@@ -6,7 +6,6 @@
 
     <resultMap id="companyMap" type="cl.bennu.controljornadabackend.model.Company">
         <id property="id" column="id"/>
-        <result property="communeId" column="commune_id"/>
         <result property="code" column="code"/>
         <result property="name" column="name"/>
         <result property="address" column="address"/>
@@ -17,6 +16,11 @@
         <result property="geolocation" column="geolocation"/>
         <result property="selfie" column="selfie"/>
         <result property="lag" column="lag"/>
+
+        <association property="commune" javaType="cl.bennu.controljornadabackend.model.Commune">
+            <id property="id" column="commune_id"/>
+            <result property="name" column="commune_name"/>
+        </association>
     </resultMap>
 
     <sql id="sqlCompany">
@@ -34,7 +38,9 @@
         , c.geolocation
         , c.selfie
         , c.lag
+        , cm.name AS commune_name
         FROM company c
+        INNER JOIN commune cm ON cm.id = c.commune_id
         <!-- @formatter:on -->
     </sql>
 
@@ -62,7 +68,7 @@
         , selfie
         , lag
         ) VALUES (
-        #{communeId}
+        #{commune.id}
         , #{code}
         , #{name}
         , #{address}
@@ -80,7 +86,7 @@
     <update id="update" parameterType="cl.bennu.controljornadabackend.model.Company">
         <!-- @formatter:off -->
         UPDATE company SET
-        commune_id = #{communeId}
+        commune_id = #{commune.id}
         , code = #{code}
         , name = #{name}
         , address = #{address}

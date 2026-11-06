@@ -6,17 +6,23 @@
 
     <resultMap id="cityMap" type="cl.bennu.controljornadabackend.model.City">
         <id property="id" column="id"/>
-        <result property="regionId" column="region_id"/>
         <result property="name" column="name"/>
+
+        <association property="region" javaType="cl.bennu.controljornadabackend.model.Region">
+            <id property="id" column="region_id"/>
+            <result property="name" column="region_name"/>
+        </association>
     </resultMap>
 
     <sql id="sqlCity">
         <!-- @formatter:off -->
         SELECT
         c.id
-        , c.region_id
         , c.name
+        , c.region_id
+        , r.name AS region_name
         FROM city c
+        INNER JOIN region r ON r.id = c.region_id
         <!-- @formatter:on -->
     </sql>
 
@@ -29,15 +35,16 @@
         WHERE c.id = #{id}
     </select>
 
-    <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.City">
+    <!-- id es INTEGER (no SERIAL): se calcula con MAX(id)+1 -->
+    <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.City" keyProperty="id" useGeneratedKeys="true">
         <!-- @formatter:off -->
         INSERT INTO city (
         id
         , region_id
         , name
         ) VALUES (
-        #{id}
-        , #{regionId}
+        (SELECT COALESCE(MAX(id), 0) + 1 FROM city)
+        , #{region.id}
         , #{name}
         )
         <!-- @formatter:on -->
@@ -46,7 +53,7 @@
     <update id="update" parameterType="cl.bennu.controljornadabackend.model.City">
         <!-- @formatter:off -->
         UPDATE city SET
-        region_id = #{regionId}
+        region_id = #{region.id}
         , name = #{name}
         WHERE id = #{id}
         <!-- @formatter:on -->

@@ -33,6 +33,9 @@ public class CityController extends BaseController {
 
     @PutMapping(ENDPOINT + "/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody City city) {
+        if (cityService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
         city.setId(id);
         cityService.update(city);
         return ok(city);
@@ -41,11 +44,17 @@ public class CityController extends BaseController {
     @GetMapping(ENDPOINT + "/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         City city = cityService.getById(id);
+        if (city == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ok(city);
     }
 
     @DeleteMapping(ENDPOINT + "/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
+        if (cityService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
         cityService.delete(id);
         return ok();
     }
