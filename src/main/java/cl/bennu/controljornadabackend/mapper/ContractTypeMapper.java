@@ -7,4 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ContractTypeMapper extends BaseMapper<ContractType> {
 
+    Long nextId();
+
 }

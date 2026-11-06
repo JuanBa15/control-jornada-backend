@@ -25,6 +25,11 @@
         WHERE ct.id = #{id}
     </select>
 
+    <select id="nextId" resultType="java.lang.Long">
+        SELECT COALESCE(MAX(ct.id), 0) + 1
+        FROM contract_type ct
+    </select>
+
     <insert id="insert" parameterType="cl.bennu.controljornadabackend.model.ContractType">
         INSERT INTO contract_type (
             id

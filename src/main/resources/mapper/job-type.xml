@@ -7,8 +7,14 @@
     <resultMap id="jobTypeMap" type="cl.bennu.controljornadabackend.model.JobType">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
-        <result property="companyId" column="company_id"/>
-        <result property="branchId" column="branch_id"/>
+        <association property="company" javaType="cl.bennu.controljornadabackend.model.Company">
+            <id property="id" column="company_id"/>
+            <result property="name" column="company_name"/>
+        </association>
+        <association property="branch" javaType="cl.bennu.controljornadabackend.model.Branch">
+            <id property="id" column="branch_id"/>
+            <result property="name" column="branch_name"/>
+        </association>
     </resultMap>
 
     <sql id="sqlJobType">
@@ -17,7 +23,11 @@
             , jt.name
             , jt.company_id
             , jt.branch_id
+            , c.name AS company_name
+            , b.name AS branch_name
         FROM job_type jt
+        LEFT JOIN company c ON c.id = jt.company_id
+        LEFT JOIN branch b ON b.id = jt.branch_id
     </sql>
 
     <select id="getAll" resultMap="jobTypeMap">
@@ -39,16 +49,16 @@
             , branch_id
         ) VALUES (
             #{name}
-            , #{companyId}
-            , #{branchId}
+            , #{company.id}
+            , #{branch.id}
         )
     </insert>
 
     <update id="update" parameterType="cl.bennu.controljornadabackend.model.JobType">
         UPDATE job_type SET
             name = #{name}
-            , company_id = #{companyId}
-            , branch_id = #{branchId}
+            , company_id = #{company.id}
+            , branch_id = #{branch.id}
         WHERE id = #{id}
     </update>
 
