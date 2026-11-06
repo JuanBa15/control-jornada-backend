@@ -29,8 +29,7 @@ CREATE TABLE contract_type (
 CREATE TABLE country (
     id INTEGER NOT NULL
     , name VARCHAR(200) NOT NULL
-	, nationality VARCHAR(200) NOT NULL,
-    active BOOLEAN  NULL
+	, nationality VARCHAR(200) NOT NULL
 
  	, PRIMARY KEY (id)
  	, UNIQUE(id)
