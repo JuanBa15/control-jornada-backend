@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,14 +33,24 @@ public class JustificationController extends BaseController {
     }
 
     @PostMapping(ENDPOINT)
-    public ResponseEntity<Justification> save(@RequestBody Justification justification) {
-        justificationService.saveJustification(justification);
+    public ResponseEntity<Justification> create(@RequestBody Justification justification) {
+        justificationService.createJustification(justification);
         return ResponseEntity.ok(justification);
     }
+
+    @PutMapping(ENDPOINT + "/{id}")
+    public ResponseEntity<Justification> update(@PathVariable Long id, @RequestBody Justification justification) {
+        justificationService.updateJustification(id, justification);
+        return ResponseEntity.ok(justification);
+    }
+
 
     @GetMapping(ENDPOINT + "/{id}")
     public ResponseEntity<Justification> getById(@PathVariable Long id) {
         Justification justification = justificationService.getJustificationById(id);
+        if (justification == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(justification);
     }
 

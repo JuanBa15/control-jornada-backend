@@ -8,7 +8,10 @@
         <id property="id" column="id"/>
         <result property="comments" column="comments"/>
         <result property="attachment" column="attachment"/>
-        <result property="justificationTypeId" column="justification_type_id"/>
+        <association property="justificationType" javaType="cl.bennu.controljornadabackend.model.JustificationType">
+            <id property="id" column="justification_type_id"/>
+            <result property="name" column="justification_type_name"/>
+        </association>
     </resultMap>
 
     <sql id="sqlJustification">
@@ -17,7 +20,9 @@
             , j.comments
             , j.attachment
             , j.justification_type_id
+            , jt.name AS justification_type_name
         FROM justification j
+        JOIN justification_type jt ON jt.id = j.justification_type_id
     </sql>
 
     <select id="getAll" resultMap="justificationMap">
@@ -37,7 +42,7 @@
         ) VALUES (
             #{comments,jdbcType=VARCHAR}
             , #{attachment,jdbcType=BINARY}
-            , #{justificationTypeId}
+            , #{justificationType.id}
         )
     </insert>
 
@@ -45,7 +50,7 @@
         UPDATE justification SET
             comments = #{comments,jdbcType=VARCHAR}
             , attachment = #{attachment,jdbcType=BINARY}
-            , justification_type_id = #{justificationTypeId}
+            , justification_type_id = #{justificationType.id}
         WHERE id = #{id}
     </update>
 

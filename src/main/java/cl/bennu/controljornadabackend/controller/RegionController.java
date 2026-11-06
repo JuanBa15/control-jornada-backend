@@ -37,9 +37,13 @@ public class RegionController extends BaseController {
         return ResponseEntity.ok(region);
     }
 
+   
     @GetMapping(ENDPOINT + "/{id}")
     public ResponseEntity<Region> getById(@PathVariable Long id) {
         Region region = regionService.getRegionById(id);
+        if (region == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(region);
     }
 

@@ -2,6 +2,7 @@ package cl.bennu.controljornadabackend.service;
 
 import cl.bennu.controljornadabackend.mapper.JustificationMapper;
 import cl.bennu.controljornadabackend.model.Justification;
+import cl.bennu.controljornadabackend.model.JustificationType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +30,9 @@ class JustificationServiceTest {
         Justification justification = new Justification();
         justification.setId(1L);
         justification.setComments("Licencia médica");
-        justification.setJustificationTypeId(1);
+        JustificationType type = new JustificationType();
+        type.setId(1L);
+        justification.setJustificationType(type);
         return justification;
     }
 
@@ -63,7 +66,7 @@ class JustificationServiceTest {
         Justification justification = justification();
         justification.setId(null);
 
-        justificationService.saveJustification(justification);
+        justificationService.createJustification(justification);
 
         verify(justificationMapper).insert(justification);
         verify(justificationMapper, never()).update(any());

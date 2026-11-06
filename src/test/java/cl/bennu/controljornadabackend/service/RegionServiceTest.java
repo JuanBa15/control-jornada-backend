@@ -2,6 +2,7 @@ package cl.bennu.controljornadabackend.service;
 
 import cl.bennu.controljornadabackend.mapper.RegionMapper;
 import cl.bennu.controljornadabackend.model.Region;
+import cl.bennu.controljornadabackend.model.Country;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +29,7 @@ class RegionServiceTest {
     private Region region() {
         Region region = new Region();
         region.setId(1L);
-        region.setCountryId(1);
+        region.setCountry(Country.valueOf(1L));
         region.setName("RM");
         return region;
     }

@@ -6,8 +6,11 @@
 
     <resultMap id="regionMap" type="cl.bennu.controljornadabackend.model.Region">
         <id property="id" column="id"/>
-        <result property="countryId" column="country_id"/>
         <result property="name" column="name"/>
+        <association property="country" javaType="cl.bennu.controljornadabackend.model.Country">
+            <id property="id" column="country_id"/>
+            <result property="name" column="country_name"/>
+        </association>
     </resultMap>
 
     <sql id="sqlRegion">
@@ -15,7 +18,9 @@
             r.id
             , r.country_id
             , r.name
+            , c.name AS country_name
         FROM region r
+        JOIN country c ON c.id = r.country_id
     </sql>
 
     <select id="getAll" resultMap="regionMap">
@@ -38,12 +43,12 @@
         FROM region
     </selectKey>
         INSERT INTO region (id, country_id, name)
-        VALUES (#{id}, #{countryId}, #{name})
+        VALUES (#{id}, #{country.id}, #{name})
     </insert>
 
     <update id="update" parameterType="cl.bennu.controljornadabackend.model.Region">
         UPDATE region
-        SET country_id = #{countryId}
+        SET country_id = #{country.id}
             , name = #{name}
         WHERE id = #{id}
     </update>

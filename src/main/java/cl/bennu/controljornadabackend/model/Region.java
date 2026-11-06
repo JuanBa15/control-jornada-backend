@@ -2,6 +2,7 @@ package cl.bennu.controljornadabackend.model;
 
 import cl.bennu.commons.domain.base.BaseDomain;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Region extends BaseDomain implements Serializable {
 
-    private Integer countryId;
+    @JsonIncludeProperties({"id", "name"})
+    private Country country;
     private String name;
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
